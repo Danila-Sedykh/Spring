@@ -22,7 +22,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private CustomUserDetailsService userDetailsService;
 
 
     @Override
@@ -35,6 +35,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             login = jwtUtil.extractUsername(jwt);
+            String role = jwtUtil.extractRole(jwt);
+            System.out.println(role);
         }
 
         if (login != null && SecurityContextHolder.getContext().getAuthentication() == null) {

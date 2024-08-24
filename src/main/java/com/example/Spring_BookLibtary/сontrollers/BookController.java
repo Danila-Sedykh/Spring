@@ -18,7 +18,7 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    @PostMapping
+    @PostMapping("/add")
     public Book addBook(@RequestBody Book newBook){
         return bookService.addBook(newBook);
     }
@@ -48,18 +48,13 @@ public class BookController {
     public ResponseEntity<Book> findBookByName(@RequestBody String name){
         return ResponseEntity.ok(bookService.findBookByName(name));
     }
-    // ||| С эти разобраться
-    // VVV
-    /*public ResponseEntity<Book> getBookByNameAndGenreAndDate(@RequestBody String name, @RequestBody Genre genre, @RequestBody LocalDate date){
-        return ResponseEntity.ok(bookService.getBookByNameAndGenreAndDate(name, genre, date)));
-    }*/
 
     @GetMapping("/count-books")
     public long getCountBooks(){
         return bookService.getCountBooks();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteBookById(@PathVariable Long id){
         bookService.deleteBookById(id);
     }

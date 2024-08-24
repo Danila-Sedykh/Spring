@@ -1,6 +1,7 @@
 package com.example.Spring_BookLibtary.security;
 
 
+import com.example.Spring_BookLibtary.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -16,9 +17,10 @@ public class JwtUtil {
 
     private String secret = "my_secret_key";
 
-    public String generateToken(String login) {
+    public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, login);
+        claims.put("role", "ROLE_" + user.getRole());
+        return createToken(claims, user.getUserLogin());
     }
 
     private String createToken(Map<String, Object> claims, String login) {
@@ -34,6 +36,11 @@ public class JwtUtil {
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public String extractRole(String token){
+        Claims claims = extractAllClaims(token);
+        return (String) claims.get("role");
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

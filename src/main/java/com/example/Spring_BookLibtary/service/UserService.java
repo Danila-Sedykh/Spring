@@ -7,6 +7,7 @@ import com.example.Spring_BookLibtary.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,9 +32,9 @@ public class UserService {
     public String loginUser(String login, String password) throws UserNotFoundException {
         User user = userRepository.findByUserLogin(login).orElse(null);
         assert user != null;
-        if (passwordEncoder.matches(password, user.getUserPassword())){
+        if (passwordEncoder.matches(password, user.getUserPassword())) {
             //return user;
-            return jwtUtil.generateToken(user.getUserLogin());
+            return jwtUtil.generateToken(user);
         }
         throw new UserNotFoundException("Неверный логин или пароль");
     }
@@ -68,8 +69,8 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    @Transactional
     public void deleteUserByUserName(String name) {
-        assert name != null;
         userRepository.deleteByUserName(name);
     }
 

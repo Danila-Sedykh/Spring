@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface BookRepository extends JpaRepository<Book, Long> {/// почему нельзя без лонг
+public interface BookRepository extends JpaRepository<Book, Long> {
 
 
     @Override
@@ -36,5 +36,5 @@ public interface BookRepository extends JpaRepository<Book, Long> {/// поче�
     void deleteById(Long aLong);
 
 
-    Book findByNameAndGenreAndDate(String name, Genre genre, LocalDate date);
+    Optional<Book> findByNameAndGenreAndDate(String name, Genre genre, LocalDate date);
 }

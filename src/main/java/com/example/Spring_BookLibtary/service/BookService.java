@@ -18,7 +18,7 @@ public class BookService {
 
 
     public Book addBook(Book newBook) {
-        Book existingBook = bookRepository.findByNameAndGenreAndDate(newBook.getName(), newBook.getGenre(), newBook.getDate());
+        Book existingBook = bookRepository.findByNameAndGenreAndDate(newBook.getName(), newBook.getGenre(), newBook.getDate()).orElse(null);
         if (existingBook != null) {
             existingBook.setCount(existingBook.getCount() + 1);
             return bookRepository.save(existingBook);
