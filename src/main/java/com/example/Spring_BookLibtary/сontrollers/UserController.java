@@ -27,14 +27,14 @@ public class UserController {
         return ResponseEntity.ok(token);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id){
-        User user = userService.findUserById(id);
+    @GetMapping("/me")
+    public ResponseEntity<User> getUserByToken(@RequestHeader("Authorization") String token){
+        User user = userService.getUserFromToken(token);
         return ResponseEntity.ok(user);
     }
 
     @GetMapping("/find-users")
-    public ResponseEntity<User> getUserByName(@RequestBody String name){
+    public ResponseEntity<User> getUserByName(@RequestParam String name){
         User user = userService.findUserByUserName(name);
         return ResponseEntity.ok(user);
     }
@@ -44,21 +44,21 @@ public class UserController {
         return ResponseEntity.ok(userService.findAllUsers());
     }
 
-    @PutMapping("/{id}/name")
-    public ResponseEntity<User> updateUserName(@PathVariable Long id, @RequestBody String name){
-        User user = userService.updateUserName(id, name);
+    @PutMapping("/me/name")
+    public ResponseEntity<User> updateUserName(@RequestHeader("Authorization") String token, @RequestParam String name){
+        User user = userService.updateUserName(token, name);
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/{id}/password")
-    public ResponseEntity<User> updateUserPassword(@PathVariable Long id, @RequestBody String password){
-        User user = userService.updateUserPassword(id, password);
+    @PutMapping("/me/password")
+    public ResponseEntity<User> updateUserPassword(@RequestHeader("Authorization") String token, @RequestBody String password){
+        User user = userService.updateUserPassword(token, password);
         return ResponseEntity.ok(user);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteUserById(@PathVariable Long id){
-        userService.deleteUserById(id);
+    @DeleteMapping("/me")
+    public void deleteUserById(@RequestHeader("Authorization") String token){
+        userService.deleteUserById(token);
     }
 
     @DeleteMapping("/delete-users")

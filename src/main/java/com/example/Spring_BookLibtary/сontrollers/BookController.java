@@ -1,7 +1,9 @@
 package com.example.Spring_BookLibtary.сontrollers;
 
 
+import com.example.Spring_BookLibtary.exception.BookNotFoundException;
 import com.example.Spring_BookLibtary.models.Book;
+import com.example.Spring_BookLibtary.models.User;
 import com.example.Spring_BookLibtary.roles.Genre;
 import com.example.Spring_BookLibtary.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +21,8 @@ public class BookController {
     private BookService bookService;
 
     @PostMapping("/add")
-    public Book addBook(@RequestBody Book newBook){
-        return bookService.addBook(newBook);
+    public Book addBook(@RequestBody Book newBook, @RequestHeader("Authorization") String token){
+        return bookService.addBook(newBook, token);
     }
 
     @PutMapping("/{id}")
@@ -40,8 +42,14 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> findBookById(@PathVariable Long id){
+    public ResponseEntity<Book> findBookById(@PathVariable Long id) throws BookNotFoundException {
         return ResponseEntity.ok(bookService.findBookById(id));
+    }
+
+    @GetMapping("/{id}/user")
+    public ResponseEntity<User> findUserByBook(@PathVariable Long id) throws BookNotFoundException {
+        Book book = bookService.findBookById(id);
+        return ResponseEntity.ok(book.getUser());
     }
 
     @GetMapping("/search")

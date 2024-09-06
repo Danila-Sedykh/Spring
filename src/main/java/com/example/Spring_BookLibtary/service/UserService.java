@@ -5,11 +5,13 @@ import com.example.Spring_BookLibtary.models.User;
 import com.example.Spring_BookLibtary.repository.UserRepository;
 import com.example.Spring_BookLibtary.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserService {
@@ -22,6 +24,9 @@ public class UserService {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private RedisTemplate<String, User> userRedisTemplate;
 
 
     public User registerUser(User newUser) {
@@ -39,6 +44,22 @@ public class UserService {
         throw new UserNotFoundException("Неверный логин или пароль");
     }
 
+
+    public User getUserFromToken(String token){
+        String userName = jwtUtil.getUserNameFromToken(token.substring(7));
+
+        User checkUser = userRedisTemplate.opsForValue().get(userName);
+        if (checkUser != null){
+            return checkUser;
+        }
+
+        User user = userRepository.findByUserName(userName).orElse(null);
+        if (user != null){
+            userRedisTemplate.opsForValue().set(userName, user, 10, TimeUnit.HOURS);
+        }
+        return user;
+    }
+
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }
@@ -51,22 +72,23 @@ public class UserService {
         return userRepository.findByUserName(name).orElse(null);
     }
 
-    public User updateUserName(Long id, String name) {
+    public User updateUserName(String token, String name) {
         assert name != null;
-        User user = userRepository.findById(id).orElse(null);
+        User user = getUserFromToken(token);
         user.setUserName(name);
         return user;
     }
 
-    public User updateUserPassword(Long id, String password) {
+    public User updateUserPassword(String token, String password) {
         assert password != null;
-        User user = userRepository.findById(id).orElse(null);
+        User user = getUserFromToken(token);
         user.setUserPassword(passwordEncoder.encode(password));
         return user;
     }
 
-    public void deleteUserById(Long id) {
-        userRepository.deleteById(id);
+    public void deleteUserById(String token) {
+        User user = getUserFromToken(token);
+        userRepository.deleteByUserName(user.getUserName());
     }
 
     @Transactional

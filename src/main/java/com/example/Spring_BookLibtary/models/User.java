@@ -1,9 +1,13 @@
 package com.example.Spring_BookLibtary.models;
 
 import com.example.Spring_BookLibtary.roles.Role;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -27,6 +31,29 @@ public class User {
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     private Role role;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user")
+    private List<Book> books = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "userId")
+    private List<FeedbackUser> feedbackUser = new ArrayList<>();
+
+    public List<FeedbackUser> getFeedbackUser() {
+        return feedbackUser;
+    }
+
+    public void setFeedbackUser(List<FeedbackUser> feedbackUser) {
+        this.feedbackUser = feedbackUser;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
+    }
 
     public String getUserLogin() {
         return userLogin;

@@ -1,6 +1,7 @@
 package com.example.Spring_BookLibtary.repository;
 
 import com.example.Spring_BookLibtary.models.Book;
+import com.example.Spring_BookLibtary.models.User;
 import com.example.Spring_BookLibtary.roles.Genre;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
