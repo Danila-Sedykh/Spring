@@ -37,5 +37,5 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     void deleteById(Long aLong);
 
 
-    Optional<Book> findByNameAndGenreAndDate(String name, Genre genre, LocalDate date);
+    Optional<Book> findByNameAndGenreAndDate(String name, Genre genre, String date);
 }

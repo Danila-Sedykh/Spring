@@ -2,6 +2,10 @@ spring:
   application:
     name: Spring-BookLibrary
 
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
@@ -21,8 +25,15 @@ spring:
     port: 6379
     timeout: 6000
 
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: true
+
 logging:
   level:
     org:
       springframework:
         security: DEBUG
+        batch: DEBUG

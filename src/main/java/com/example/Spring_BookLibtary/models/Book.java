@@ -15,7 +15,7 @@ import java.util.List;
 public class Book {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @JsonBackReference
@@ -31,7 +31,7 @@ public class Book {
     private String name;
 
     @Column(name = "production_date")
-    private LocalDate date;
+    private String date;
 
     @Column(name = "book_cost")
     private Integer cost = 0;
@@ -43,6 +43,13 @@ public class Book {
     @OneToMany(mappedBy = "bookId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FeedbackBook> feedback = new ArrayList<>();
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public List<FeedbackBook> getFeedback() {
         return feedback;
@@ -76,11 +83,11 @@ public class Book {
         this.name = name;
     }
 
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
