@@ -3,6 +3,7 @@ package com.example.Spring_BookLibtary.models;
 
 import com.example.Spring_BookLibtary.roles.Genre;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -40,7 +41,7 @@ public class Book {
     private long count = 0;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "bookId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "bookId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<FeedbackBook> feedback = new ArrayList<>();
 
     public Long getId() {

@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -69,6 +71,7 @@ public class BatchConfig {
                 .processor(processor())
                 .writer(writer())
                 .listener(stepExecutionListener())
+                .taskExecutor(taskExecutor())
                 .build();
     }
 
@@ -126,5 +129,12 @@ public class BatchConfig {
                 return ExitStatus.COMPLETED;
             }
         };
+    }
+
+    @Bean
+    public TaskExecutor taskExecutor() {
+        SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
+        taskExecutor.setConcurrencyLimit(3);
+        return taskExecutor;
     }
 }

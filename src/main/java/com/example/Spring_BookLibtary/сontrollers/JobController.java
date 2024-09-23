@@ -7,6 +7,8 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +25,10 @@ public class JobController {
     @Autowired
     private Job job;
 
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
+    @Async
     @PostMapping("/uploadExcel")
     public ResponseEntity<String> startBatchJob(@RequestParam("file") MultipartFile file, @RequestHeader("Authorization") String token) throws Exception{
         try {
@@ -41,11 +47,16 @@ public class JobController {
 
             jobLauncher.run(job, jobParameters);
 
-            return ResponseEntity.ok("File uploaded and batch job started");
+            messagingTemplate.convertAndSend("/topic/status", "Файл загружен, начата обработка.");
+
+            return ResponseEntity.ok("Файл загружен, начата обработка");
 
         } catch (Exception e) {
+
+            messagingTemplate.convertAndSend("/topic/status", "Ошибка при загрузке файла: " + e.getMessage());
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred: " + e.getMessage());
+                    .body("Ошибка при загрузке файла: " + e.getMessage());
         }
     }
 }

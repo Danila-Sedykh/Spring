@@ -7,9 +7,9 @@ spring:
       write-dates-as-timestamps: false
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: 1
+    url: jdbc:postgresql://postgres:5432/postgres
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:1}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -21,8 +21,8 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   redis:
-    host: localhost
-    port: 6379
+    host: ${SPRING_REDIS_HOST:redis}
+    port: ${SPRING_REDIS_PORT:6379}
     timeout: 6000
 
   batch:
@@ -35,5 +35,11 @@ logging:
   level:
     org:
       springframework:
+        web:
+          cors: DEBUG
+          servlet:
+            DispatcherServlet: DEBUG
         security: DEBUG
         batch: DEBUG
+    org.hibernate.SQL: DEBUG
+    root: INFO

@@ -45,6 +45,7 @@ public class UserService {
     }
 
 
+    @Transactional
     public User getUserFromToken(String token){
         String userName = jwtUtil.getUserNameFromToken(token.substring(7));
 
@@ -55,8 +56,10 @@ public class UserService {
 
         User user = userRepository.findByUserName(userName).orElse(null);
         if (user != null){
+            user.getBooks().forEach(book -> book.getFeedback().size());
             userRedisTemplate.opsForValue().set(userName, user, 10, TimeUnit.HOURS);
         }
+
         return user;
     }
 
